@@ -2,11 +2,25 @@ name: Closed Issue Message
 
 on:
   workflow_dispatch:
+    inputs:
+      commit_sha:
+        description: 'Commit SHA to checkout'
+        required: true
+      repository_name:
+        description: 'Name of the source repository of the format {owner}/{repo}'
+        required: true
 
 jobs:
   process_pull_request:
     runs-on: ubuntu-latest
     steps:
-      - name: Do something
-        run: |
-          echo "Triggered"
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        repository: ${{ github.event.inputs.repository_name }}
+        ref: ${{ github.event.inputs.commit_sha }}
+        path: smithy-rs
+    - name: Check repo
+      working-directory: smithy-rs
+      run: |
+        ls
